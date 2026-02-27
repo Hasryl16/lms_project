@@ -9,40 +9,43 @@ class UsersSeeder extends Seeder
     public function run()
     {
         $data = [
-            // Admin users
             [
+                'id' => 'A001',
                 'name' => 'Admin LMS',
                 'email' => 'admin@gmail.com',
                 'password' => password_hash('admin123', PASSWORD_DEFAULT),
                 'role' => 'admin',
             ],
             [
+                'id' => 'A002',
                 'name' => 'Admin Demo',
                 'email' => 'admin@edu.com',
                 'password' => password_hash('admin123', PASSWORD_DEFAULT),
                 'role' => 'admin',
             ],
-            // Lecturer users
             [
+                'id' => 'L001',
                 'name' => 'Dosen Informatika',
                 'email' => 'dosen@gmail.com',
                 'password' => password_hash('dosen123', PASSWORD_DEFAULT),
                 'role' => 'lecturer',
             ],
             [
+                'id' => 'L002',
                 'name' => 'Lecturer Demo',
                 'email' => 'lecturer@edu.com',
                 'password' => password_hash('lecturer123', PASSWORD_DEFAULT),
                 'role' => 'lecturer',
             ],
-            // Student users
             [
+                'id' => 'S001',
                 'name' => 'fatur',
                 'email' => 'fatur@gmail.com',
                 'password' => password_hash('fatur123', PASSWORD_DEFAULT),
                 'role' => 'student',
             ],
             [
+                'id' => 'S002',
                 'name' => 'Student Demo',
                 'email' => 'student@edu.com',
                 'password' => password_hash('student123', PASSWORD_DEFAULT),
@@ -50,11 +53,9 @@ class UsersSeeder extends Seeder
             ],
         ];
 
-        // Use query builder to insert - this handles the table prefix if any
         $db = \Config\Database::connect();
         $builder = $db->table('users');
         
-        // Clear existing data and insert new
         $builder->emptyTable('users');
         $builder->insertBatch($data);
     }

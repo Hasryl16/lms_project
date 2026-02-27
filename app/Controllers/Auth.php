@@ -72,7 +72,7 @@ class Auth extends ResourceController
             'role'  => $user['role']
         ]);
         
-        $redirectUrl = $this->getRedirectUrl($role) . '?token=' . $token;
+        $redirectUrl = $this->getRedirectUrl($role);
         
         return $this->respond([
             'success'      => true,

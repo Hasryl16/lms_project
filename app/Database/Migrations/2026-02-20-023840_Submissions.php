@@ -11,7 +11,7 @@ class Submissions extends Migration
         $this->forge->addField([
             'id' => ['type'=>'INT','unsigned'=>true,'auto_increment'=>true],
             'assignment_id' => ['type'=>'INT','unsigned'=>true],
-            'mahasiswa_id' => ['type'=>'INT','unsigned'=>true],
+            'mahasiswa_id' => ['type'=>'VARCHAR','constraint'=>10],
             'file_path' => ['type'=>'VARCHAR','constraint'=>255,'null'=>true],
             'answer_text' => ['type'=>'TEXT','null'=>true],
             'submitted_at' => ['type'=>'DATETIME','null'=>true],

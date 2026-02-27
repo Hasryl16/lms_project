@@ -11,7 +11,7 @@ class Enrollments extends Migration
         $this->forge->addField([
             'id' => ['type'=>'INT','unsigned'=>true,'auto_increment'=>true],
             'course_id' => ['type'=>'INT','unsigned'=>true],
-            'mahasiswa_id' => ['type'=>'INT','unsigned'=>true],
+            'mahasiswa_id' => ['type'=>'VARCHAR','constraint'=>10],
             'enrolled_at' => ['type'=>'DATETIME','null'=>true],
         ]);
 

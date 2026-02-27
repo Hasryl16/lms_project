@@ -12,7 +12,7 @@ class Courses extends Migration
             'id' => ['type'=>'INT','unsigned'=>true,'auto_increment'=>true],
             'title' => ['type'=>'VARCHAR','constraint'=>150],
             'description' => ['type'=>'TEXT'],
-            'dosen_id' => ['type'=>'INT','unsigned'=>true],
+            'dosen_id' => ['type'=>'VARCHAR','constraint'=>10],
             'created_at' => ['type'=>'DATETIME','null'=>true],
         ]);
 
