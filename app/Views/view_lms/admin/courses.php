@@ -20,7 +20,7 @@
                 <h1 class="h4 fw-bold text-dark">LMS Admin</h1>
                 <p class="small text-muted mb-0">Management Portal</p>
             </div>
-                <nav class="p-3">
+            <nav class="p-3">
                 <div class="nav flex-column">
                     <a href="<?= base_url('/admin') ?>" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-grid-1x2 me-2"></i>Dashboard
@@ -33,9 +33,6 @@
                     </a>
                     <a href="<?= base_url('/admin/lecturers') ?>" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-person-badge me-2"></i>Lecturers
-                    </a>
-                    <a href="<?= base_url('/admin/enrollments') ?>" class="nav-link rounded px-3 py-2">
-                        <i class="bi bi-person-plus me-2"></i>Enrollments
                     </a>
                 </div>
             </nav>
@@ -72,12 +69,13 @@
                                     <th>Course Title</th>
                                     <th>Description</th>
                                     <th>Lecturer</th>
+                                    <th>Course Code</th>
                                     <th>Created</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="coursesTableBody">
-                                <tr><td colspan="6" class="text-center text-muted py-4">Loading...</td></tr>
+                                <tr><td colspan="7" class="text-center text-muted py-4">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -125,45 +123,40 @@
         // Get token from URL or localStorage
         const urlParams = new URLSearchParams(window.location.search);
         let token = urlParams.get('token');
-        
+
         if (!token) {
             token = localStorage.getItem('authToken');
         }
-        
+
         if (!token) {
             window.location.href = '<?= base_url('/login') ?>';
         }
-        
+
         localStorage.setItem('authToken', token);
-        
-        const API_BASE = '<?= rtrim(base_url(), '/') ?>';
+
+        const API_BASE = '<?= base_url() ?>';
         let allCourses = [];
-        
+
         function getHeaders() {
-            // Get CSRF token from cookie
-            const csrfToken = document.cookie.match(/csrf_cookie_name=([^;]+)/);
-            const csrfValue = csrfToken ? csrfToken[1] : '<?= csrf_hash() ?>';
-            
             return {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
-                'X-CSRF-TOKEN': csrfValue
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
             };
         }
-        
+
         function logout() {
             localStorage.removeItem('authToken');
             window.location.href = '<?= base_url('/login') ?>';
         }
-        
-// Load lecturers for dropdown
+
+        // Load lecturers for dropdown
         async function loadLecturers() {
             try {
                 const response = await fetch(API_BASE + '/admin/api/lecturers', {
                     headers: getHeaders()
                 });
                 const result = await response.json();
-                
+
                 if (result.success) {
                     const select = document.getElementById('courseLecturer');
                     result.data.forEach(lecturer => {
@@ -177,7 +170,7 @@
                 console.error('Error loading lecturers:', e);
             }
         }
-        
+
         // Load courses
         async function loadCourses() {
             try {
@@ -185,28 +178,28 @@
                     headers: getHeaders()
                 });
                 const result = await response.json();
-                
+
                 if (result.success) {
                     allCourses = result.data;
                     renderCoursesTable(allCourses);
                 } else {
-                    document.getElementById('coursesTableBody').innerHTML = 
-                        '<tr><td colspan="6" class="text-center text-danger py-4">Error loading courses</td></tr>';
+                    document.getElementById('coursesTableBody').innerHTML =
+                        '<tr><td colspan="7" class="text-center text-danger py-4">Error loading courses</td></tr>';
                 }
             } catch (e) {
                 console.error('Error:', e);
-                document.getElementById('coursesTableBody').innerHTML = 
-                    '<tr><td colspan="6" class="text-center text-danger py-4">Error connecting to server</td></tr>';
+                document.getElementById('coursesTableBody').innerHTML =
+                    '<tr><td colspan="7" class="text-center text-danger py-4">Error connecting to server</td></tr>';
             }
         }
-        
+
         function renderCoursesTable(courses) {
             if (courses.length === 0) {
-                document.getElementById('coursesTableBody').innerHTML = 
-                    '<tr><td colspan="6" class="text-center text-muted py-4">No courses found</td></tr>';
+                document.getElementById('coursesTableBody').innerHTML =
+                    '<tr><td colspan="7" class="text-center text-muted py-4">No courses found</td></tr>';
                 return;
             }
-            
+
             const html = courses.map(course => `
                 <tr>
                     <td>${course.id}</td>
@@ -215,6 +208,7 @@
                     </td>
                     <td><small class="text-muted">${course.description || '-'}</small></td>
                     <td>${course.lecturer_name || 'Not assigned'}</td>
+                    <td><code class="text-primary">${course.course_code || 'N/A'}</code></td>
                     <td><small class="text-muted">${course.created_at || '-'}</small></td>
                     <td class="text-end">
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="editCourse(${course.id})">
@@ -228,20 +222,21 @@
             `).join('');
             document.getElementById('coursesTableBody').innerHTML = html;
         }
-        
+
         function filterCourses() {
             const query = document.getElementById('courseSearch').value.toLowerCase();
-            const filtered = allCourses.filter(c => 
-                c.title.toLowerCase().includes(query) || 
+            const filtered = allCourses.filter(c =>
+                c.title.toLowerCase().includes(query) ||
                 (c.description && c.description.toLowerCase().includes(query)) ||
-                (c.lecturer_name && c.lecturer_name.toLowerCase().includes(query))
+                (c.lecturer_name && c.lecturer_name.toLowerCase().includes(query)) ||
+                (c.course_code && c.course_code.toLowerCase().includes(query))
             );
             renderCoursesTable(filtered);
         }
-        
+
         function showCourseModal(courseId = null) {
             const modal = new bootstrap.Modal(document.getElementById('courseModal'));
-            
+
             if (courseId) {
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
@@ -258,7 +253,7 @@
             }
             modal.show();
         }
-        
+
         async function saveCourse() {
             const id = document.getElementById('courseId').value;
             const courseData = {
@@ -266,28 +261,28 @@
                 description: document.getElementById('courseDescription').value,
                 dosen_id: document.getElementById('courseLecturer').value
             };
-            
+
             if (!courseData.title) {
                 alert('Please enter a course title');
                 return;
             }
-            
+
             if (!courseData.dosen_id) {
                 alert('Please select a lecturer');
                 return;
             }
-            
+
             const url = id ? API_BASE + '/admin/api/courses/update/' + id : API_BASE + '/admin/api/courses/create';
-            
+
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: getHeaders(),
                     body: JSON.stringify(courseData)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     bootstrap.Modal.getInstance(document.getElementById('courseModal')).hide();
                     loadCourses();
@@ -300,24 +295,24 @@
                 alert('Error connecting to server');
             }
         }
-        
+
         function editCourse(id) {
             showCourseModal(id);
         }
-        
+
         async function deleteCourse(id) {
             if (!confirm('Are you sure you want to delete this course?')) {
                 return;
             }
-            
+
             try {
                 const response = await fetch(API_BASE + '/admin/api/courses/delete/' + id, {
                     method: 'POST',
                     headers: getHeaders()
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     loadCourses();
                     alert(result.message);
@@ -329,7 +324,7 @@
                 alert('Error connecting to server');
             }
         }
-        
+
         // Initialize
         loadLecturers();
         loadCourses();
