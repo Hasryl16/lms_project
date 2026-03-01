@@ -40,9 +40,51 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('api/enrollments', 'Admin::enrollments');
 });
 
+// Lecturer - View pages (accessible but with manual auth check in controller)
+$routes->get('lecturer', 'Lecturer::index');
+$routes->get('lecturer/dashboard', 'Lecturer::dashboard');
+$routes->get('lecturer/courses', 'Lecturer::courses');
+$routes->get('lecturer/modules/(:num)', 'Lecturer::modules/$1');
+$routes->get('lecturer/materials/(:num)', 'Lecturer::materials/$1');
+$routes->get('lecturer/assignments/(:num)', 'Lecturer::assignments/$1');
+$routes->get('lecturer/submissions/(:num)', 'Lecturer::submissions/$1');
+$routes->get('lecturer/gradeSubmission/(:num)', 'Lecturer::gradeSubmission/$1');
+
+// New routes for all items view
+$routes->get('lecturer/all-modules', 'Lecturer::allModules');
+$routes->get('lecturer/all-materials', 'Lecturer::allMaterials');
+$routes->get('lecturer/all-assignments', 'Lecturer::allAssignments');
+$routes->get('lecturer/all-submissions', 'Lecturer::allSubmissions');
+$routes->get('lecturer/grading', 'Lecturer::grading');
+
+// Lecturer - API endpoints (protected)
 $routes->group('lecturer', ['filter' => 'auth:lecturer'], function($routes) {
-    $routes->get('/', 'Lecturer::index');
-    $routes->get('dashboard', 'Lecturer::dashboard');
+    // Courses - API
+    $routes->get('getCourses', 'Lecturer::getCourses');
+    
+    // Create forms
+    $routes->get('createModule/(:num)', 'Lecturer::createModule/$1');
+    $routes->post('createModule/(:num)', 'Lecturer::createModule/$1');
+    $routes->get('createMaterial/(:num)', 'Lecturer::createMaterial/$1');
+    $routes->post('createMaterial/(:num)', 'Lecturer::createMaterial/$1');
+    $routes->get('createAssignment/(:num)', 'Lecturer::createAssignment/$1');
+    $routes->post('createAssignment/(:num)', 'Lecturer::createAssignment/$1');
+
+    // Update/Delete forms and actions
+    $routes->get('updateModule/(:num)', 'Lecturer::updateModule/$1');
+    $routes->post('updateModule/(:num)', 'Lecturer::updateModule/$1');
+    $routes->post('deleteModule/(:num)', 'Lecturer::deleteModule/$1');
+    
+    $routes->get('updateMaterial/(:num)', 'Lecturer::updateMaterial/$1');
+    $routes->post('updateMaterial/(:num)', 'Lecturer::updateMaterial/$1');
+    $routes->post('deleteMaterial/(:num)', 'Lecturer::deleteMaterial/$1');
+    
+    $routes->get('updateAssignment/(:num)', 'Lecturer::updateAssignment/$1');
+    $routes->post('updateAssignment/(:num)', 'Lecturer::updateAssignment/$1');
+    $routes->post('deleteAssignment/(:num)', 'Lecturer::deleteAssignment/$1');
+
+    // Grading
+    $routes->post('gradeSubmission/(:num)', 'Lecturer::gradeSubmission/$1');
 });
 
 $routes->group('student', ['filter' => 'auth:student'], function($routes) {

@@ -102,6 +102,10 @@
                                     <textarea class="form-control" id="courseDescription" rows="3"></textarea>
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">Course Code</label>
+                                    <input type="text" class="form-control" id="courseCode" placeholder="e.g., CS101" required>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Lecturer</label>
                                     <select class="form-select" id="courseLecturer" required>
                                         <option value="">Select a lecturer</option>
@@ -244,6 +248,7 @@
                     document.getElementById('courseId').value = course.id;
                     document.getElementById('courseTitle').value = course.title;
                     document.getElementById('courseDescription').value = course.description || '';
+                    document.getElementById('courseCode').value = course.course_code || '';
                     document.getElementById('courseLecturer').value = course.dosen_id || '';
                 }
             } else {
@@ -259,11 +264,17 @@
             const courseData = {
                 title: document.getElementById('courseTitle').value,
                 description: document.getElementById('courseDescription').value,
+                course_code: document.getElementById('courseCode').value,
                 dosen_id: document.getElementById('courseLecturer').value
             };
 
             if (!courseData.title) {
                 alert('Please enter a course title');
+                return;
+            }
+
+            if (!courseData.course_code) {
+                alert('Please enter a course code');
                 return;
             }
 

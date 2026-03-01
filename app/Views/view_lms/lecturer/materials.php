@@ -3,51 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Materials - LMS</title>
+    <title>Materials - LMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: white;
-            border-right: 1px solid #e5e7eb;
-        }
-        .nav-link {
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            color: #374151;
-            transition: all 0.2s;
-        }
-        .nav-link:hover, .nav-link.active {
-            background: #f3e8ff;
-            color: #9333ea;
-        }
-        .material-card {
-            border-radius: 0.75rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .material-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .file-drop-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .file-drop-zone:hover {
-            border-color: #9333ea;
-            background: #faf5ff;
-        }
+        .sidebar { width: 260px; min-height: 100vh; background: white; border-right: 1px solid #e5e7eb; }
+        .nav-link { border-radius: 0.5rem; padding: 0.75rem 1rem; color: #374151; transition: all 0.2s; }
+        .nav-link:hover, .nav-link.active { background: #f3e8ff; color: #9333ea; }
+        .material-card { border-radius: 0.75rem; transition: transform 0.2s, box-shadow 0.2s; }
+        .material-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
         <aside class="sidebar d-flex flex-column">
             <div class="p-4 border-bottom">
                 <h4 class="fw-bold text-purple"><i class="bi bi-mortarboard-fill text-purple me-2"></i>Lecturer Portal</h4>
@@ -56,349 +24,234 @@
             
             <nav class="p-3 flex-grow-1">
                 <div class="nav flex-column gap-2">
-                    <a href="dashboard.html" class="nav-link">
+                    <a href="<?= base_url('lecturer/dashboard') ?>" class="nav-link">
                         <i class="bi bi-house-door me-2"></i>Dashboard
                     </a>
-                    <a href="courses.html" class="nav-link">
+                    <a href="<?= base_url('lecturer/courses') ?>" class="nav-link">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="materials.html" class="nav-link active">
-                        <i class="bi bi-folder me-2"></i>Materials
+                    <a href="<?= base_url('lecturer/all-modules') ?>" class="nav-link">
+                        <i class="bi bi-collection me-2"></i>Modules
                     </a>
-                    <a href="assignments.html" class="nav-link">
-                        <i class="bi bi-file-text me-2"></i>Assignments
+                    <a href="<?= base_url('lecturer/all-materials') ?>" class="nav-link active">
+                        <i class="bi bi-file-earmark-text me-2"></i>Materials
                     </a>
-                    <a href="grading.html" class="nav-link">
-                        <i class="bi bi-award me-2"></i>Grading
+                    <a href="<?= base_url('lecturer/all-assignments') ?>" class="nav-link">
+                        <i class="bi bi-file-check me-2"></i>Assignments
+                    </a>
+                    <a href="<?= base_url('lecturer/all-submissions') ?>" class="nav-link">
+                        <i class="bi bi-star me-2"></i>Grading
                     </a>
                 </div>
             </nav>
 
             <div class="p-3 border-top">
-                <a href="../login.html" class="btn btn-outline-secondary w-100">
+                <a href="#" onclick="logout()" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-box-arrow-left me-2"></i>Logout
                 </a>
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-grow-1 bg-light p-4" style="min-height: 100vh;">
+            <?php if (isset($course) && isset($module)): ?>
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?= base_url('lecturer/courses') ?>">My Courses</a></li>
+                    <li class="breadcrumb-item"><a href="<?= base_url('lecturer/modules/' . $course['id']) ?>"><?= esc($course['title']) ?></a></li>
+                    <li class="breadcrumb-item active"><?= esc($module['title']) ?></li>
+                </ol>
+            </nav>
+            <?php endif; ?>
+
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2 class="fw-bold">Course Materials</h2>
-                    <p class="text-muted">Manage learning resources for your courses</p>
+                    <h2 class="fw-bold">Materials</h2>
+                    <p class="text-muted">
+                        <?php if (isset($course) && isset($module)): ?>
+                            <?= esc($module['title']) ?> - <?= esc($course['title']) ?>
+                        <?php else: ?>
+                            All Materials Across Your Courses
+                        <?php endif; ?>
+                    </p>
                 </div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#materialModal" onclick="openAddModal()">
+                <?php if (isset($module)): ?>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#materialModal">
                     <i class="bi bi-plus-lg me-1"></i>Add Material
                 </button>
+                <?php endif; ?>
             </div>
 
-            <!-- Stats -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="text-muted small mb-1">Total Materials</p>
-                            <h4 class="fw-bold mb-0">4</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="text-muted small mb-1">PDFs</p>
-                            <h4 class="fw-bold mb-0">1</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="text-muted small mb-1">Videos</p>
-                            <h4 class="fw-bold mb-0">1</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="text-muted small mb-1">Links</p>
-                            <h4 class="fw-bold mb-0">1</h4>
-                        </div>
-                    </div>
-                </div>
+            <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
+            <?php endif; ?>
+            
+            <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
 
-            <!-- Materials by Course -->
-            <div class="card mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0 fw-bold">Web Development Fundamentals</h5>
-                    <p class="text-muted small mb-0">2 materials</p>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="material-card p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="d-flex gap-2">
-                                        <i class="bi bi-file-earmark-pdf text-danger mt-1"></i>
-                                        <div>
-                                            <h6 class="mb-0">Introduction to HTML</h6>
-                                            <p class="small text-muted mb-0">Basic HTML structure and elements</p>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-danger">PDF</span>
-                                </div>
-                                <div class="d-flex justify-content-between small text-muted mb-2">
-                                    <span>Uploaded: 2026-02-15</span>
-                                    <span>2.4 MB</span>
-                                </div>
+            <?php if (!empty($materials)): ?>
+            <div class="row g-3">
+                <?php foreach ($materials as $material): ?>
+                <div class="col-md-6">
+                    <div class="card material-card h-100">
+                        <div class="card-header bg-white border-0">
+                            <div class="d-flex justify-content-between align-items-start">
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                        <i class="bi bi-download me-1"></i>Download
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editMaterial('1')">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMaterial('1')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    <?php
+                                    $iconClass = 'bi-file-earmark-text';
+                                    $badgeClass = 'bg-secondary';
+                                    if (strpos(strtolower($material['type'] ?? ''), 'pdf') !== false) {
+                                        $iconClass = 'bi-file-earmark-pdf';
+                                        $badgeClass = 'bg-danger';
+                                    } elseif (strpos(strtolower($material['type'] ?? ''), 'video') !== false) {
+                                        $iconClass = 'bi-play-circle';
+                                        $badgeClass = 'bg-primary';
+                                    } elseif (strpos(strtolower($material['type'] ?? ''), 'image') !== false) {
+                                        $iconClass = 'bi-file-earmark-image';
+                                        $badgeClass = 'bg-success';
+                                    }
+                                    ?>
+                                    <i class="bi <?= $iconClass ?> text-muted mt-1"></i>
+                                    <div>
+                                        <h6 class="mb-0"><?= esc($material['title']) ?></h6>
+                                        <?php if (isset($material['module_title'])): ?>
+                                            <small class="text-purple"><?= esc($material['module_title']) ?></small>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
+                                <span class="badge <?= $badgeClass ?>"><?= esc($material['type'] ?? 'file') ?></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="material-card p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="d-flex gap-2">
-                                        <i class="bi bi-play-circle text-primary mt-1"></i>
-                                        <div>
-                                            <h6 class="mb-0">CSS Flexbox Tutorial</h6>
-                                            <p class="small text-muted mb-0">Complete guide to CSS Flexbox layout</p>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-primary">Video</span>
-                                </div>
-                                <div class="d-flex justify-content-between small text-muted mb-2">
-                                    <span>Uploaded: 2026-02-18</span>
-                                    <span>45.2 MB</span>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                        <i class="bi bi-download me-1"></i>Download
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editMaterial('2')">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMaterial('2')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between small text-muted mb-2">
+                                <span>Uploaded: <?= date('Y-m-d', strtotime($material['uploaded_at'] ?? date('Y-m-d'))) ?></span>
+                                <?php if (isset($material['course_title'])): ?>
+                                    <span class="badge bg-light text-dark"><?= esc($material['course_title']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <?php if (!empty($material['file_path'])): ?>
+                                <a href="<?= base_url('writable/uploads/' . $material['file_path']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                    <i class="bi bi-download me-1"></i>View
+                                </a>
+                                <?php endif; ?>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteMaterial(<?= $material['id'] ?>)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
             </div>
-
+            <?php else: ?>
             <div class="card">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0 fw-bold">Advanced JavaScript</h5>
-                    <p class="text-muted small mb-0">1 material</p>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="material-card p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="d-flex gap-2">
-                                        <i class="bi bi-file-earmark-text text-success mt-1"></i>
-                                        <div>
-                                            <h6 class="mb-0">JavaScript ES6 Features</h6>
-                                            <p class="small text-muted mb-0">Arrow functions, destructuring, and more</p>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-success">Document</span>
-                                </div>
-                                <div class="d-flex justify-content-between small text-muted mb-2">
-                                    <span>Uploaded: 2026-02-10</span>
-                                    <span>1.8 MB</span>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                        <i class="bi bi-download me-1"></i>Download
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editMaterial('3')">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMaterial('3')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="material-card p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="d-flex gap-2">
-                                        <i class="bi bi-link-45deg text-purple mt-1"></i>
-                                        <div>
-                                            <h6 class="mb-0">MDN Web Docs</h6>
-                                            <p class="small text-muted mb-0">Official Mozilla documentation</p>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-purple" style="background: #9333ea;">Link</span>
-                                </div>
-                                <div class="d-flex justify-content-between small text-muted mb-2">
-                                    <span>Uploaded: 2026-02-05</span>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <a href="https://developer.mozilla.org" target="_blank" class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                        <i class="bi bi-box-arrow-up-right me-1"></i>Open Link
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editMaterial('4')">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMaterial('4')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-folder text-muted fs-1 d-block mb-3"></i>
+                    <h5>No materials yet</h5>
+                    <p class="text-muted">Start by adding learning materials to your modules.</p>
+                    <?php if (isset($module)): ?>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#materialModal">
+                        <i class="bi bi-plus-lg me-1"></i>Add First Material
+                    </button>
+                    <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
         </main>
     </div>
 
-    <!-- Add/Edit Material Modal -->
+    <?php if (isset($module)): ?>
     <div class="modal fade" id="materialModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Add New Material</h5>
+                    <h5 class="modal-title">Add New Material</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="materialForm" onsubmit="saveMaterial(event)">
+                <form action="<?= base_url('lecturer/createMaterial/' . $module['id']) ?>" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
                     <div class="modal-body">
-                        <input type="hidden" id="materialId">
-                        <div class="mb-3">
-                            <label class="form-label">Course</label>
-                            <select class="form-select" id="materialCourse" required>
-                                <option value="">Select course</option>
-                                <option value="Web Development Fundamentals">Web Development Fundamentals</option>
-                                <option value="Advanced JavaScript">Advanced JavaScript</option>
-                                <option value="React Advanced Topics">React Advanced Topics</option>
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">Material Title</label>
-                            <input type="text" class="form-control" id="materialTitle" placeholder="e.g., Introduction to React Hooks" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" id="materialDescription" rows="3" placeholder="Brief description of the material" required></textarea>
+                            <input type="text" class="form-control" name="title" placeholder="e.g., Lecture Notes Chapter 1" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Material Type</label>
-                            <select class="form-select" id="materialType" required>
-                                <option value="PDF">PDF Document</option>
-                                <option value="Video">Video</option>
-                                <option value="Document">Document</option>
-                                <option value="Link">External Link</option>
+                            <select class="form-select" name="type" required>
+                                <option value="">Select type...</option>
+                                <option value="application/pdf">PDF Document</option>
+                                <option value="application/vnd.ms-powerpoint">Powerpoint</option>
+                                <option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Word Document</option>
+                                <option value="video/mp4">Video</option>
+                                <option value="image/jpeg">Image</option>
+                                <option value="text/plain">Text File</option>
+                                <option value="application/zip">ZIP Archive</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Upload File</label>
-                            <div class="file-drop-zone" onclick="document.getElementById('fileInput').click()">
-                                <i class="bi bi-cloud-upload fs-3 text-muted d-block mb-2"></i>
-                                <p class="mb-1">Click to upload or drag and drop</p>
-                                <p class="small text-muted mb-0">PDF, DOC, MP4, or any file (Max 100MB)</p>
-                                <input type="file" id="fileInput" style="display: none;">
-                            </div>
+                            <input type="file" class="form-control" name="file" required>
+                            <div class="form-text">Max file size: 10MB</div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Material</button>
+                        <button type="submit" class="btn btn-primary">Upload Material</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sample data
-        let materials = [
-            { id: "1", title: "Introduction to HTML", description: "Basic HTML structure and elements", course: "Web Development Fundamentals", type: "PDF", fileName: "html-basics.pdf", uploadDate: "2026-02-15", size: "2.4 MB" },
-            { id: "2", title: "CSS Flexbox Tutorial", description: "Complete guide to CSS Flexbox layout", course: "Web Development Fundamentals", type: "Video", fileName: "flexbox-tutorial.mp4", uploadDate: "2026-02-18", size: "45.2 MB" },
-            { id: "3", title: "JavaScript ES6 Features", description: "Arrow functions, destructuring, and more", course: "Advanced JavaScript", type: "Document", fileName: "es6-features.docx", uploadDate: "2026-02-10", size: "1.8 MB" },
-            { id: "4", title: "MDN Web Docs", description: "Official Mozilla documentation", course: "Web Development Fundamentals", type: "Link", uploadDate: "2026-02-05" }
-        ];
-
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add New Material';
-            document.getElementById('materialForm').reset();
-            document.getElementById('materialId').value = '';
-        }
-
-        function editMaterial(id) {
-            const material = materials.find(m => m.id === id);
-            if (material) {
-                document.getElementById('modalTitle').textContent = 'Edit Material';
-                document.getElementById('materialId').value = material.id;
-                document.getElementById('materialCourse').value = material.course;
-                document.getElementById('materialTitle').value = material.title;
-                document.getElementById('materialDescription').value = material.description;
-                document.getElementById('materialType').value = material.type;
-                
-                const modal = new bootstrap.Modal(document.getElementById('materialModal'));
-                modal.show();
+        const BASE_URL = '<?= base_url() ?>';
+        const CSRF_TOKEN = '<?= csrf_token() ?>';
+        const CSRF_HASH = '<?= csrf_hash() ?>';
+        
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = BASE_URL + '/login';
+                return false;
             }
+            return true;
         }
 
-        function saveMaterial(event) {
-            event.preventDefault();
-            
-            const id = document.getElementById('materialId').value;
-            const course = document.getElementById('materialCourse').value;
-            const title = document.getElementById('materialTitle').value;
-            const description = document.getElementById('materialDescription').value;
-            const type = document.getElementById('materialType').value;
-
-            if (id) {
-                // Update existing
-                const index = materials.findIndex(m => m.id === id);
-                if (index !== -1) {
-                    materials[index] = { ...materials[index], course, title, description, type };
-                }
-                alert('Material updated successfully!');
-            } else {
-                // Add new
-                const newMaterial = {
-                    id: Date.now().toString(),
-                    title,
-                    description,
-                    course,
-                    type,
-                    fileName: title.toLowerCase().replace(/\s+/g, '-') + '.' + type.toLowerCase(),
-                    uploadDate: new Date().toISOString().split('T')[0],
-                    size: '2.5 MB'
-                };
-                materials.push(newMaterial);
-                alert('Material added successfully!');
-            }
-
-            bootstrap.Modal.getInstance(document.getElementById('materialModal')).hide();
-            location.reload();
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('currentUserRole');
+            window.location.href = BASE_URL + '/login';
         }
 
-        function deleteMaterial(id) {
+        function deleteMaterial(materialId) {
             if (confirm('Are you sure you want to delete this material?')) {
-                materials = materials.filter(m => m.id !== id);
-                alert('Material deleted successfully!');
-                location.reload();
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = BASE_URL + '/lecturer/deleteMaterial/' + materialId;
+                
+                // Add CSRF token
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = CSRF_TOKEN;
+                csrfInput.value = CSRF_HASH;
+                form.appendChild(csrfInput);
+                
+                document.body.appendChild(form);
+                form.submit();
             }
         }
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>
 </html>

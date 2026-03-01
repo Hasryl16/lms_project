@@ -11,7 +11,7 @@ class CourseModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
-    protected $allowedFields    = ['title', 'description', 'dosen_id', 'created_at'];
+    protected $allowedFields    = ['title', 'description', 'dosen_id', 'course_code', 'created_at'];
     protected $useTimestamps    = false;
     
     public function getAllCourses()
@@ -31,7 +31,40 @@ class CourseModel extends Model
     
     public function getCoursesByLecturer($lecturerId)
     {
-        return $this->where('dosen_id', $lecturerId)->findAll();
+        $courses = $this->where('dosen_id', $lecturerId)->findAll();
+        
+        // Add counts for each course
+        $db = \Config\Database::connect();
+        
+        foreach ($courses as &$course) {
+            // Student count (from enrollments)
+            $course['student_count'] = $db->table('enrollments')
+                ->where('course_id', $course['id'])
+                ->countAllResults();
+            
+            // Module count
+            $course['module_count'] = $db->table('modules')
+                ->where('course_id', $course['id'])
+                ->countAllResults();
+            
+            // Assignment count
+            $course['assignment_count'] = $db->table('assignments')
+                ->select('assignments.id')
+                ->join('modules', 'modules.id = assignments.module_id')
+                ->where('modules.course_id', $course['id'])
+                ->countAllResults();
+            
+            // Pending grading count
+            $course['pending_grading'] = $db->table('submissions')
+                ->select('submissions.id')
+                ->join('assignments', 'assignments.id = submissions.assignment_id')
+                ->join('modules', 'modules.id = assignments.module_id')
+                ->where('modules.course_id', $course['id'])
+                ->where('submissions.score IS NULL')
+                ->countAllResults();
+        }
+        
+        return $courses;
     }
     
     public function createCourse($data)

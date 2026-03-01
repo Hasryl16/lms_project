@@ -74,7 +74,19 @@ class Auth extends ResourceController
         
         $redirectUrl = $this->getRedirectUrl($role);
         
-        return $this->respond([
+        // Set cookie for server-side authentication
+        $cookie = [
+            'name'   => 'authToken',
+            'value'  => $token,
+            'expire' => 86400,
+            'path'   => '/',
+            'httponly' => false
+        ];
+        
+        // Build response with cookie
+        $response = service('response');
+        $response->setCookie($cookie);
+        $response->setJSON([
             'success'      => true,
             'message'      => 'Login successful',
             'token'        => $token,
@@ -85,7 +97,9 @@ class Auth extends ResourceController
                 'email' => $user['email'],
                 'role'  => $user['role']
             ]
-        ], 200);
+        ]);
+        
+        return $response;
     }
     
     public function logout()

@@ -8,10 +8,11 @@ class CourseSeeder extends Seeder
 {
    public function run()
     {
-        $this->db->table('courses')->insert([
+$this->db->table('courses')->insert([
             'title' => 'Pemrograman Web',
             'description' => 'Mata kuliah dasar pemrograman web',
             'dosen_id' => 2,
+            'course_code' => 'PW001',
             'created_at' => date('Y-m-d H:i:s'),
         ]);
     }
