@@ -22,25 +22,25 @@
             </div>
             <nav class="p-3">
                 <div class="nav flex-column">
-                    <a href="dashboard.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/dashboard" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-house me-2"></i>Dashboard
                     </a>
-                    <a href="browse.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/browse" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-search me-2"></i>Browse Courses
                     </a>
-                    <a href="my-courses.html" class="nav-link rounded px-3 py-2 active">
+                    <a href="/student/my-courses" class="nav-link rounded px-3 py-2 active">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="assignments.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/assignments" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-file-text me-2"></i>Assignments
                     </a>
-                    <a href="grades.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/grades" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-award me-2"></i>Grades
                     </a>
                 </div>
             </nav>
             <div class="position-absolute bottom-0 start-0 end-0 p-3">
-                <a href="../index.html" class="btn btn-outline-secondary w-100">
+                <a href="/" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-arrow-left me-2"></i>Back to Home
                 </a>
             </div>
@@ -83,8 +83,17 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../data.js"></script>
     <script>
+        function getData() {
+            return {
+                courses: [
+                    { id: 1, title: "Web Development Fundamentals", description: "Learn HTML, CSS, JavaScript", lecturer: "Dr. Smith", duration: "12 weeks", enrolled: true },
+                    { id: 2, title: "Data Science with Python", description: "Master data analysis", lecturer: "Prof. Johnson", duration: "16 weeks", enrolled: true },
+                    { id: 3, title: "Mobile App Development", description: "Build iOS and Android apps", lecturer: "Dr. Williams", duration: "14 weeks", enrolled: true }
+                ]
+            };
+        }
+        
         const data = getData();
         const myCourses = data.courses.filter(c => c.enrolled);
         
@@ -98,7 +107,7 @@
         document.getElementById('myCoursesCount').textContent = myCourses.length;
         
         document.getElementById('myCoursesGrid').innerHTML = myCourses.length === 0 
-            ? '<div class="col-12 text-center py-5"><p class="text-muted">You have not enrolled in any courses yet.</p><a href="browse.html" class="btn btn-primary">Browse Courses</a></div>'
+            ? '<div class="col-12 text-center py-5"><p class="text-muted">You have not enrolled in any courses yet.</p><a href="/student/browse" class="btn btn-primary">Browse Courses</a></div>'
             : myCourses.map((course, i) => `
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 border-0 shadow-sm">
@@ -120,7 +129,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-white border-0">
-                            <a href="assignments.html" class="btn btn-outline-primary w-100">View Assignments</a>
+                            <a href="/student/assignments" class="btn btn-outline-primary w-100">View Assignments</a>
                         </div>
                     </div>
                 </div>

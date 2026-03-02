@@ -22,4 +22,24 @@ class Lecturer extends BaseController
     {
         return view('view_lms/lecturer/dashboard');
     }
+    
+    public function courses(): string
+    {
+        return view('view_lms/lecturer/courses');
+    }
+    
+    public function materials(): string
+    {
+        return view('view_lms/lecturer/materials');
+    }
+    
+    public function assignments(): string
+    {
+        return view('view_lms/lecturer/assignments');
+    }
+    
+    public function grading(): string
+    {
+        return view('view_lms/lecturer/grading');
+    }
 }

@@ -22,25 +22,25 @@
             </div>
             <nav class="p-3">
                 <div class="nav flex-column">
-                    <a href="dashboard.html" class="nav-link rounded px-3 py-2 active">
+                    <a href="/student/dashboard" class="nav-link rounded px-3 py-2 active">
                         <i class="bi bi-house me-2"></i>Dashboard
                     </a>
-                    <a href="browse.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/browse" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-search me-2"></i>Browse Courses
                     </a>
-                    <a href="my-courses.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/my-courses" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="assignments.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/assignments" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-file-text me-2"></i>Assignments
                     </a>
-                    <a href="grades.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/grades" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-award me-2"></i>Grades
                     </a>
                 </div>
             </nav>
             <div class="position-absolute bottom-0 start-0 end-0 p-3">
-                <a href="../login.html" class="btn btn-outline-secondary w-100">
+                <a href="/login" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-box-arrow-left me-2"></i>Logout
                 </a>
             </div>
@@ -191,8 +191,30 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../data.js"></script>
     <script>
+        // Mock data function
+        function getData() {
+            return {
+                courses: [
+                    { id: 1, title: "Web Development Fundamentals", enrolled: true },
+                    { id: 2, title: "Data Science with Python", enrolled: true },
+                    { id: 3, title: "Mobile App Development", enrolled: true },
+                    { id: 4, title: "UI/UX Design Basics", enrolled: false }
+                ],
+                studentEnrolledCourses: [1, 2, 3],
+                assignments: [
+                    { id: 1, title: "React Final Project", status: "pending", dueDate: "Feb 23, 2026" },
+                    { id: 2, title: "Python Assignment 4", status: "pending", dueDate: "Feb 25, 2026" },
+                    { id: 3, title: "Mobile Quiz 2", status: "pending", dueDate: "Feb 28, 2026" }
+                ],
+                grades: [
+                    { course: "Web Development Fundamentals", currentGrade: 85, letterGrade: "B" },
+                    { course: "Data Science with Python", currentGrade: 92, letterGrade: "A" },
+                    { course: "Mobile App Development", currentGrade: 78, letterGrade: "C" }
+                ]
+            };
+        }
+        
         const data = getData();
         const myCourses = data.courses.filter(c => c.enrolled);
         

@@ -50,26 +50,26 @@
             
             <nav class="p-3 flex-grow-1">
                 <div class="nav flex-column gap-2">
-                    <a href="dashboard.html" class="nav-link">
+                    <a href="/lecturer/dashboard" class="nav-link">
                         <i class="bi bi-house-door me-2"></i>Dashboard
                     </a>
-                    <a href="courses.html" class="nav-link active">
+                    <a href="/lecturer/courses" class="nav-link active">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="materials.html" class="nav-link">
+                    <a href="/lecturer/materials" class="nav-link">
                         <i class="bi bi-folder me-2"></i>Materials
                     </a>
-                    <a href="assignments.html" class="nav-link">
+                    <a href="/lecturer/assignments" class="nav-link">
                         <i class="bi bi-file-text me-2"></i>Assignments
                     </a>
-                    <a href="grading.html" class="nav-link">
+                    <a href="/lecturer/grading" class="nav-link">
                         <i class="bi bi-award me-2"></i>Grading
                     </a>
                 </div>
             </nav>
 
             <div class="p-3 border-top">
-                <a href="../login.html" class="btn btn-outline-secondary w-100">
+                <a href="/login" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-box-arrow-left me-2"></i>Logout
                 </a>
             </div>
@@ -163,10 +163,10 @@
                         </div>
                         <div class="card-footer bg-white border-0">
                             <div class="d-flex gap-2">
-                                <a href="materials.html?course=1" class="btn btn-outline-secondary flex-grow-1">
+                                <a href="/lecturer/materials" class="btn btn-outline-secondary flex-grow-1">
                                     <i class="bi bi-folder me-1"></i>Materials
                                 </a>
-                                <a href="grading.html?course=1" class="btn btn-primary flex-grow-1">
+                                <a href="/lecturer/grading" class="btn btn-primary flex-grow-1">
                                     <i class="bi bi-award me-1"></i>Grade
                                 </a>
                             </div>
@@ -225,10 +225,10 @@
                         </div>
                         <div class="card-footer bg-white border-0">
                             <div class="d-flex gap-2">
-                                <a href="materials.html?course=2" class="btn btn-outline-secondary flex-grow-1">
+                                <a href="/lecturer/materials" class="btn btn-outline-secondary flex-grow-1">
                                     <i class="bi bi-folder me-1"></i>Materials
                                 </a>
-                                <a href="grading.html?course=2" class="btn btn-primary flex-grow-1">
+                                <a href="/lecturer/grading" class="btn btn-primary flex-grow-1">
                                     <i class="bi bi-award me-1"></i>Grade
                                 </a>
                             </div>
@@ -287,10 +287,10 @@
                         </div>
                         <div class="card-footer bg-white border-0">
                             <div class="d-flex gap-2">
-                                <a href="materials.html?course=3" class="btn btn-outline-secondary flex-grow-1">
+                                <a href="/lecturer/materials" class="btn btn-outline-secondary flex-grow-1">
                                     <i class="bi bi-folder me-1"></i>Materials
                                 </a>
-                                <a href="grading.html?course=3" class="btn btn-primary flex-grow-1">
+                                <a href="/lecturer/grading" class="btn btn-primary flex-grow-1">
                                     <i class="bi bi-award me-1"></i>Grade
                                 </a>
                             </div>

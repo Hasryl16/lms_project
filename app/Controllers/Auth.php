@@ -65,6 +65,13 @@ class Auth extends ResourceController
             ], 401);
         }
         
+        // Create session for server-side auth
+        $session = session();
+        $session->set('user_id', $user['id']);
+        $session->set('user_name', $user['name']);
+        $session->set('user_email', $user['email']);
+        $session->set('user_role', $user['role']);
+        
         $token = generateJWT([
             'id'    => $user['id'],
             'name'  => $user['name'],
@@ -90,6 +97,10 @@ class Auth extends ResourceController
     
     public function logout()
     {
+        // Destroy session
+        $session = session();
+        $session->destroy();
+        
         return $this->respond([
             'success'  => true,
             'message' => 'Logout successful'

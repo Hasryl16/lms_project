@@ -22,25 +22,25 @@
             </div>
             <nav class="p-3">
                 <div class="nav flex-column">
-                    <a href="dashboard.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/dashboard" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-house me-2"></i>Dashboard
                     </a>
-                    <a href="browse.html" class="nav-link rounded px-3 py-2 active">
+                    <a href="/student/browse" class="nav-link rounded px-3 py-2 active">
                         <i class="bi bi-search me-2"></i>Browse Courses
                     </a>
-                    <a href="my-courses.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/my-courses" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="assignments.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/assignments" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-file-text me-2"></i>Assignments
                     </a>
-                    <a href="grades.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/grades" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-award me-2"></i>Grades
                     </a>
                 </div>
             </nav>
             <div class="position-absolute bottom-0 start-0 end-0 p-3">
-                <a href="../index.html" class="btn btn-outline-secondary w-100">
+                <a href="/" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-arrow-left me-2"></i>Back to Home
                 </a>
             </div>
@@ -65,10 +65,27 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../data.js"></script>
     <script>
+        // Mock data function
+        function getData() {
+            return {
+                courses: [
+                    { id: 1, title: "Web Development Fundamentals", description: "Learn HTML, CSS, JavaScript and modern web development", lecturer: "Dr. Smith", duration: "12 weeks", enrolledStudents: 245, level: "Beginner", enrolled: true },
+                    { id: 2, title: "Data Science with Python", description: "Master data analysis, visualization and machine learning", lecturer: "Prof. Johnson", duration: "16 weeks", enrolledStudents: 180, level: "Intermediate", enrolled: true },
+                    { id: 3, title: "Mobile App Development", description: "Build iOS and Android apps with React Native", lecturer: "Dr. Williams", duration: "14 weeks", enrolledStudents: 132, level: "Intermediate", enrolled: true },
+                    { id: 4, title: "UI/UX Design Basics", description: "Learn design principles and prototyping", lecturer: "Ms. Brown", duration: "8 weeks", enrolledStudents: 89, level: "Beginner", enrolled: false }
+                ],
+                studentEnrolledCourses: [1, 2, 3]
+            };
+        }
+        
         let data = getData();
         let currentFilter = 'all';
+
+        // Mock saveData function
+        function saveData(data) {
+            localStorage.setItem('lmsStudentData', JSON.stringify(data));
+        }
 
         function getLevelBadge(level) {
             switch(level) {

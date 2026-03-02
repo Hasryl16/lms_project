@@ -22,25 +22,25 @@
             </div>
             <nav class="p-3">
                 <div class="nav flex-column">
-                    <a href="dashboard.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/dashboard" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-house me-2"></i>Dashboard
                     </a>
-                    <a href="browse.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/browse" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-search me-2"></i>Browse Courses
                     </a>
-                    <a href="my-courses.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/my-courses" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-book me-2"></i>My Courses
                     </a>
-                    <a href="assignments.html" class="nav-link rounded px-3 py-2">
+                    <a href="/student/assignments" class="nav-link rounded px-3 py-2">
                         <i class="bi bi-file-text me-2"></i>Assignments
                     </a>
-                    <a href="grades.html" class="nav-link rounded px-3 py-2 active">
+                    <a href="/student/grades" class="nav-link rounded px-3 py-2 active">
                         <i class="bi bi-award me-2"></i>Grades
                     </a>
                 </div>
             </nav>
             <div class="position-absolute bottom-0 start-0 end-0 p-3">
-                <a href="../index.html" class="btn btn-outline-secondary w-100">
+                <a href="/" class="btn btn-outline-secondary w-100">
                     <i class="bi bi-arrow-left me-2"></i>Back to Home
                 </a>
             </div>
@@ -181,8 +181,18 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../data.js"></script>
     <script>
+        function getData() {
+            return {
+                courses: [
+                    { id: 1, title: "Web Development Fundamentals", enrolled: true },
+                    { id: 2, title: "Data Science with Python", enrolled: true },
+                    { id: 3, title: "Mobile App Development", enrolled: true },
+                    { id: 4, title: "UI/UX Design Basics", enrolled: false }
+                ]
+            };
+        }
+        
         const data = getData();
         const myCourses = data.courses.filter(c => c.enrolled);
         document.getElementById('coursesCount').textContent = myCourses.length;

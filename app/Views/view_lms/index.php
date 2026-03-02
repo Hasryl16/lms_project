@@ -29,7 +29,7 @@
             </div>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-4">
-                    <a href="login.html" class="text-decoration-none">
+                    <a href="/student" class="text-decoration-none">
                         <div class="card h-100 border-0 shadow-lg">
                             <div class="card-body text-center p-5">
                                 <div class="mx-auto mb-4 bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
@@ -43,7 +43,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="login.html" class="text-decoration-none">
+                    <a href="/lecturer" class="text-decoration-none">
                         <div class="card h-100 border-0 shadow-lg">
                             <div class="card-body text-center p-5">
                                 <div class="mx-auto mb-4 bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
@@ -57,7 +57,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="login.html" class="text-decoration-none">
+                    <a href="/admin" class="text-decoration-none">
                         <div class="card h-100 border-0 shadow-lg">
                             <div class="card-body text-center p-5">
                                 <div class="mx-auto mb-4 bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
