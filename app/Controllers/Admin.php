@@ -65,7 +65,17 @@ class Admin extends BaseController
     
     public function createCourse()
     {
+        // Try to get JSON data first, fall back to POST data
         $data = $this->request->getJSON(true);
+        
+        if (empty($data)) {
+            $data = [
+                'title' => $this->request->getPost('title'),
+                'description' => $this->request->getPost('description'),
+                'dosen_id' => $this->request->getPost('dosen_id'),
+                'course_code' => $this->request->getPost('course_code')
+            ];
+        }
         
         if (!isset($data['title']) || empty($data['title'])) {
             return $this->respond(['success' => false, 'message' => 'Title is required'], 400);
@@ -83,7 +93,8 @@ class Admin extends BaseController
         $result = $this->courseModel->createCourse([
             'title' => $data['title'],
             'description' => $data['description'] ?? '',
-            'dosen_id' => $data['dosen_id']
+            'dosen_id' => $data['dosen_id'],
+            'course_code' => $data['course_code'] ?? null
         ]);
         
         if ($result) {
@@ -95,32 +106,75 @@ class Admin extends BaseController
     
     public function updateCourse($id)
     {
-        $data = $this->request->getJSON(true);
-        
-        $course = $this->courseModel->find($id);
-        if (!$course) {
-            return $this->respond(['success' => false, 'message' => 'Course not found'], 404);
-        }
-        
-        if (isset($data['dosen_id'])) {
-            $lecturer = $this->userModel->find($data['dosen_id']);
-            if (!$lecturer || $lecturer['role'] !== 'lecturer') {
-                return $this->respond(['success' => false, 'message' => 'Invalid lecturer'], 400);
+        try {
+            // Try to get JSON data first, fall back to POST data
+            $data = $this->request->getJSON(true);
+            
+            // If JSON parsing failed, try raw input
+            if (empty($data)) {
+                $rawInput = file_get_contents('php://input');
+                $jsonData = json_decode($rawInput, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $data = $jsonData;
+                }
             }
+            
+            // If still empty, try POST data
+            if (empty($data)) {
+                $data = [
+                    'title' => $this->request->getPost('title'),
+                    'description' => $this->request->getPost('description'),
+                    'dosen_id' => $this->request->getPost('dosen_id'),
+                    'course_code' => $this->request->getPost('course_code')
+                ];
+            }
+            
+            log_message('debug', 'UpdateCourse raw input: ' . file_get_contents('php://input'));
+            log_message('debug', 'UpdateCourse parsed data: ' . print_r($data, true));
+            
+            $course = $this->courseModel->find($id);
+            if (!$course) {
+                return $this->respond(['success' => false, 'message' => 'Course not found'], 404);
+            }
+            
+            if (isset($data['dosen_id']) && !empty($data['dosen_id'])) {
+                $lecturer = $this->userModel->find($data['dosen_id']);
+                if (!$lecturer || $lecturer['role'] !== 'lecturer') {
+                    return $this->respond(['success' => false, 'message' => 'Invalid lecturer'], 400);
+                }
+            }
+            
+            $updateData = [];
+            if (isset($data['title']) && $data['title'] !== null && $data['title'] !== '') {
+                $updateData['title'] = $data['title'];
+            }
+            if (isset($data['description'])) {
+                $updateData['description'] = $data['description'];
+            }
+            if (isset($data['dosen_id']) && $data['dosen_id'] !== null && $data['dosen_id'] !== '') {
+                $updateData['dosen_id'] = $data['dosen_id'];
+            }
+            if (isset($data['course_code']) && $data['course_code'] !== null && $data['course_code'] !== '') {
+                $updateData['course_code'] = $data['course_code'];
+            }
+            
+            if (empty($updateData)) {
+                return $this->respond(['success' => false, 'message' => 'No data to update'], 400);
+            }
+            
+            log_message('debug', 'UpdateCourse updateData: ' . print_r($updateData, true));
+            
+            $result = $this->courseModel->updateCourse($id, $updateData);
+            
+            if ($result) {
+                return $this->respond(['success' => true, 'message' => 'Course updated successfully'], 200);
+            }
+            
+            return $this->respond(['success' => false, 'message' => 'Failed to update course'], 500);
+        } catch (\Exception $e) {
+            log_message('error', 'UpdateCourse error: ' . $e->getMessage());
+            return $this->respond(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
-        
-        $updateData = [];
-        if (isset($data['title'])) $updateData['title'] = $data['title'];
-        if (isset($data['description'])) $updateData['description'] = $data['description'];
-        if (isset($data['dosen_id'])) $updateData['dosen_id'] = $data['dosen_id'];
-        
-        $result = $this->courseModel->updateCourse($id, $updateData);
-        
-        if ($result) {
-            return $this->respond(['success' => true, 'message' => 'Course updated successfully'], 200);
-        }
-        
-        return $this->respond(['success' => false, 'message' => 'Failed to update course'], 500);
     }
     
     public function deleteCourse($id)
@@ -169,7 +223,11 @@ class Admin extends BaseController
             return $this->respond(['success' => false, 'message' => 'Email already exists'], 400);
         }
         
+        // Generate custom user ID (e.g., L001, L002)
+        $userId = $this->userModel->generateUserId('lecturer');
+        
         $result = $this->userModel->insert([
+            'id' => $userId,
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $this->userModel->hashPassword($data['password']),

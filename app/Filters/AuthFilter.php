@@ -31,17 +31,28 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        $token = $request->getHeader('Authorization');
+        $token = null;
         
-        // If no Authorization header, check for token in query string or cookie
+        // First, check Authorization header (from fetch with Bearer token)
+        $authHeader = $request->getHeader('Authorization');
+        if ($authHeader && $authHeader->getValue()) {
+            $authValue = $authHeader->getValue();
+            // Remove "Bearer " prefix if present
+            if (stripos($authValue, 'Bearer ') === 0) {
+                $token = substr($authValue, 7);
+            } else {
+                $token = $authValue;
+            }
+        }
+        
+        // If no header token, check query string
         if (!$token) {
             $token = $request->getGet('token');
-            if (!$token) {
-                $token = $request->getCookie('authToken');
-            }
-        } else {
-            // Remove "Bearer " prefix if present
-            $token = str_replace('Bearer ', '', $token->getValue());
+        }
+        
+        // If no query string token, check cookie
+        if (!$token) {
+            $token = $request->getCookie('authToken');
         }
         
         if (!$token) {
@@ -58,7 +69,7 @@ class AuthFilter implements FilterInterface
             // Decode the token
             $decoded = JWT::decode($token, new Key($jwtKey, 'HS256'));
             
-// Check if role is allowed
+            // Check if role is allowed
             if ($arguments && !in_array($decoded->data->role, $arguments)) {
                 return response()->setStatusCode(403)->setJSON([
                     'success' => false,
@@ -69,7 +80,7 @@ class AuthFilter implements FilterInterface
         } catch (\Exception $e) {
             return response()->setStatusCode(401)->setJSON([
                 'success' => false,
-                'message' => 'Invalid or expired token'
+                'message' => 'Invalid or expired token: ' . $e->getMessage()
             ]);
         }
     }

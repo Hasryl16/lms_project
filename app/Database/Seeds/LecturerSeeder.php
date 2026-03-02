@@ -31,10 +31,29 @@ class LecturerSeeder extends Seeder
         $userBuilder = $db->table('users');
         
         foreach ($lecturers as $user) {
-            $existing = $userBuilder->where('id', $user['id'])->get()->getRow();
-            if (!$existing) {
-                $userBuilder->insert($user);
-                echo "Created lecturer: {$user['id']} - {$user['name']}\n";
+            // Check by email first (primary check) - this is the unique constraint
+            $existingByEmail = $userBuilder->where('email', $user['email'])->get()->getRow();
+            
+            if ($existingByEmail) {
+                // User exists with this email - check if ID matches
+                if ($existingByEmail->id === $user['id']) {
+                    echo "Lecturer already exists with correct ID: {$user['id']} - {$user['name']}\n";
+                } else {
+                    // Email exists with different ID - this is a data inconsistency
+                    // We can't easily fix this due to foreign key constraints
+                    echo "Warning: Email {$user['email']} exists with ID {$existingByEmail->id}, expected {$user['id']}\n";
+                    echo "  Please manually update the ID in the database or clear the data and re-seed.\n";
+                }
+            } else {
+                // No user with this email - check if ID is available
+                $existingById = $userBuilder->where('id', $user['id'])->get()->getRow();
+                if ($existingById) {
+                    // ID exists but with different email - this is a problem
+                    echo "Warning: ID {$user['id']} is used by another user. Cannot insert {$user['email']}\n";
+                } else {
+                    $userBuilder->insert($user);
+                    echo "Created lecturer: {$user['id']} - {$user['name']}\n";
+                }
             }
         }
 

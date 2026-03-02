@@ -138,7 +138,8 @@
 
         localStorage.setItem('authToken', token);
 
-        const API_BASE = '<?= base_url() ?>';
+        // Use rtrim to remove trailing slash
+        const API_BASE = '<?= rtrim(base_url(), '/') ?>';
         let allCourses = [];
 
         function getHeaders() {
@@ -241,8 +242,10 @@
         function showCourseModal(courseId = null) {
             const modal = new bootstrap.Modal(document.getElementById('courseModal'));
 
-            if (courseId) {
-                const course = allCourses.find(c => c.id === courseId);
+            if (courseId !== null && courseId !== undefined && courseId !== '') {
+                // Convert to number for comparison
+                const numericId = parseInt(courseId);
+                const course = allCourses.find(c => parseInt(c.id) === numericId);
                 if (course) {
                     document.getElementById('courseModalTitle').textContent = 'Edit Course';
                     document.getElementById('courseId').value = course.id;
@@ -283,7 +286,12 @@
                 return;
             }
 
-            const url = id ? API_BASE + '/admin/api/courses/update/' + id : API_BASE + '/admin/api/courses/create';
+            let url;
+            if (id && id !== '') {
+                url = API_BASE + '/admin/api/courses/update/' + id;
+            } else {
+                url = API_BASE + '/admin/api/courses/create';
+            }
 
             try {
                 const response = await fetch(url, {

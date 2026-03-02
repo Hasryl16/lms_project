@@ -194,10 +194,10 @@
                     <td>${lecturer.email}</td>
                     <td><small class="text-muted">${lecturer.created_at || '-'}</small></td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editLecturer(${lecturer.id})">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editLecturer('${lecturer.id}')">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteLecturer(${lecturer.id})">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteLecturer('${lecturer.id}')">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>

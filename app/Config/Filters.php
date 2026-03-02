@@ -79,6 +79,8 @@ class Filters extends BaseFilters
                     'auth/*',           // Exclude auth routes from CSRF
                     'api/*',            // Exclude API routes from CSRF
                     'admin/api/*',      // Exclude admin API routes from CSRF
+                    'student/*',        // Exclude student routes from CSRF
+                    'lecturer/*',       // Exclude lecturer routes from CSRF
                     'login',            // Exclude login page
                 ],
             ],

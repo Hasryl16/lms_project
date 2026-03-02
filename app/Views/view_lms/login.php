@@ -230,7 +230,8 @@
                         email: email,
                         password: password,
                         role: role
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const data = await response.json();
